@@ -1,4 +1,4 @@
-import regex
+import re
 import sys
 import argparse
 
@@ -18,7 +18,7 @@ should_replace = args.replace
 
 file_contents = filename.read()  # get the entire file as a string
 search_string = r"from ([a-zA-Z]+) import \*"  # regex to find all wildcard-imported module names
-module_names = regex.findall(search_string, file_contents)
+module_names = re.findall(search_string, file_contents)
 
 map(__import__, module_names)  # import ALL of these modules names at once
 
@@ -39,7 +39,7 @@ for module in module_names:
         # namespace e.g. we don't want to match an existing `numpy.array`.
         search_expression = r"(?<![\w\._]){0}(?![_\w])".format(function_name)
 
-        if regex.search(search_expression, file_contents):
+        if re.search(search_expression, file_contents):
             print("Found expression `{0}` that belongs to module namespace `{1}` in following contexts:".format(function_name, module))
             
             # get everything before (i.e. upto start of string) and after (upto end of string) as named groups `before`, `after`.
@@ -47,10 +47,10 @@ for module in module_names:
             match_expression = "(?P<before>.+)?(?P<definition>{0})(?P<after>.+)?".format(search_expression)
 
             # lazily split the file into lines
-            file_contents_generator = (x.group(0) for x in regex.finditer(r"[^\n]+", file_contents))
+            file_contents_generator = (x.group(0) for x in re.finditer(r"[^\n]+", file_contents))
 
             for line_number, line in enumerate(file_contents_generator):
-                match = regex.match(match_expression, line)
+                match = re.match(match_expression, line)
                 
                 if match:
                     
@@ -67,7 +67,7 @@ for module in module_names:
                 if raw_input("Replace this for all matched lines? (y/n)") == "y":
                     # replace (say) `array` with `numpy.array` 
                     replacement_expression = "{0}.{1}".format(module, function_name)
-                    file_contents = regex.sub(search_expression, replacement_expression, file_contents)
+                    file_contents = re.sub(search_expression, replacement_expression, file_contents)
                 else:
                     print "Skipping replacement"
 
