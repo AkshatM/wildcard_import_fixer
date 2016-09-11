@@ -10,9 +10,6 @@ parser.add_argument('--replace', action="store_true", help="Indicate you want to
 
 args = parser.parse_args()
 
-def replacement_confirmation():
-    return True if raw_input("Replace this for all matched lines? (y/n)") == "y" else False
-
 ## Collect all of our important flags and variables
 filename = args.filename[0]
 should_replace = args.replace
@@ -20,7 +17,7 @@ should_replace = args.replace
 ## obtain the file content, extract the module names, and import the same
 
 file_contents = filename.read()  # get the entire file as a string
-search_string = r"from ([a-zA-Z]+) import *"  # regex to find all wildcard-imported module names
+search_string = r"from ([a-zA-Z]+) import \*"  # regex to find all wildcard-imported module names
 module_names = regex.findall(search_string, file_contents)
 
 map(__import__, module_names)  # import ALL of these modules names at once
@@ -67,7 +64,7 @@ for module in module_names:
 
             if should_replace:
 
-                if replacement_confirmation():
+                if raw_input("Replace this for all matched lines? (y/n)") == "y":
                     # replace (say) `array` with `numpy.array` 
                     replacement_expression = "{0}.{1}".format(module, function_name)
                     file_contents = regex.sub(search_expression, replacement_expression, file_contents)

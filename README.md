@@ -27,7 +27,7 @@ Hopefully, this tool can help mitigate some of the pain involved in identifying 
 # Usage
 
 ```
-age: universal-fixer.py [-h] [--replace] file_path
+usage: universal-fixer.py [-h] [--replace] file_path
 
 Find all function names from universal imports and fix them!
 
@@ -39,3 +39,20 @@ optional arguments:
   --replace   Indicate you want to replace found matches to conform to PEP8 standard for wildcard import. 
               Omitted, universal-fixer only searches and displays found matches, but does not alter the actual file.
 ```
+
+Example output for `python universal-fixer.py test.py`:
+
+```
+Found expression `abstractmethod` that belongs to module namespace `abc` in following contexts:
+	Line 11: ...@abstractmethod
+Found expression `ABCMeta` that belongs to module namespace `abc` in following contexts:
+	Line 9: ...re.replacegoobersmakr; x = ABCMeta([1]); wefzsegsergaewfsefsefsdfgs...
+Found expression `array` that belongs to module namespace `numpy` in following contexts:
+	Line 12: ...+array(10)-array(5)+(array(14) / array(19))...
+Found expression `testing` that belongs to module namespace `numpy` in following contexts:
+	Line 2: ...A demo file for testing. ...
+Found expression `array` that belongs to module namespace `scipy` in following contexts:
+	Line 12: ...+array(10)-array(5)+(array(14) / array(19))...
+```
+
+With `--replace`, expect to be prompted before changing each import.
